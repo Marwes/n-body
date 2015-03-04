@@ -1,7 +1,7 @@
 #ifndef BODY_H
 #define BODY_H
 #include "units.h"
-class body
+struct body
 {
 	mass m;
 	//pos
