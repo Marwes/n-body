@@ -3,6 +3,7 @@
 #include "units.h"
 class body
 {
+public:
 	mass m;
 	//pos
 	cord pos;
