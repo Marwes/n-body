@@ -1,11 +1,11 @@
 #ifndef UNITS_H
 #define UNITS_H
 
-typedef mass double;
-typedef distance double;
+typedef  double mass;
+typedef  double distance;
 
 struct cord
 {
-	distance[DIM];
-}
+	distance a[DIM];
+};
 #endif

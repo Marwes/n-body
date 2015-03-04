@@ -9,6 +9,6 @@ class body
 	//vel
 	cord vel;
 	void update(body* put, cord acc);
-}
+};
 
 #endif
