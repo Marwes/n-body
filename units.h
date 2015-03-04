@@ -22,7 +22,14 @@ struct cord
 	{
 		for(int i=0;i<DIM;i++)
 			a[i]*=rhs;
-	}
+    }
+    distance& operator[](std::size_t idx) {
+        return a[idx];
+    }
+
+    const distance& operator[](std::size_t idx) const {
+        return a[idx];
+    }
 };
 inline cord operator+(cord lhs, const cord& rhs) {
     lhs += rhs;
