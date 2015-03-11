@@ -11,14 +11,14 @@ Cell::Cell(bounding_box box)
 bounding_box::bounding_box() {
 }
 
-bounding_box::bounding_box(const cord& pos1, const cord& pos2) {
+bounding_box::bounding_box(const vec& pos1, const vec& pos2) {
     center = 0.5 * (pos2 + pos1);
     length = pos2[0] - pos1[0];
     if (length < 0) {
         length = -length;
     }
 }
-bool bounding_box::contains(const cord& position) {
+bool bounding_box::contains(const vec& position) {
     double halfSide = length / 2;
     for (int i = 0; i < DIM; ++i) {
         if (center[i] - halfSide > position[i]
@@ -43,16 +43,16 @@ void Cell::insert_body(const body& body) {
         return;
     }
     double half = bounds.length / 2;
-    cord center = bounds.center;
+    vec center = bounds.center;
     std::array<bounding_box, 8> child_boxes = {
-        bounding_box(center, cord(half, half, half)),
-        bounding_box(center, cord(half, half, -half)),
-        bounding_box(center, cord(half, -half, half)),
-        bounding_box(center, cord(half, -half, -half)),
-        bounding_box(center, cord(-half, half, half)),
-        bounding_box(center, cord(-half, half, -half)),
-        bounding_box(center, cord(-half, -half, half)),
-        bounding_box(center, cord(-half, -half, -half)),
+        bounding_box(center, vec(half, half, half)),
+        bounding_box(center, vec(half, half, -half)),
+        bounding_box(center, vec(half, -half, half)),
+        bounding_box(center, vec(half, -half, -half)),
+        bounding_box(center, vec(-half, half, half)),
+        bounding_box(center, vec(-half, half, -half)),
+        bounding_box(center, vec(-half, -half, half)),
+        bounding_box(center, vec(-half, -half, -half)),
     };
     for (int i = 0; i < 8; ++i) {
         bounding_box box = child_boxes[i];

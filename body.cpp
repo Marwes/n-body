@@ -1,6 +1,6 @@
 #include "body.h"
 
-void body::update(body * target,cord acc)
+void body::update(body * target, vec acc)
 {
 	target->m=m;
 	target->vel+=acc*=0.5;

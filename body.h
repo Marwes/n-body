@@ -6,10 +6,10 @@ struct body
 public:
 	mass m;
 	//pos
-	cord pos;
+	vec pos;
 	//vel
-	cord vel;
-	void update(body* put, cord acc);
+	vec vel;
+	void update(body* put, vec acc);
 };
 
 #endif

@@ -6,28 +6,28 @@
 typedef  double mass;
 typedef  double distance;
 
-struct cord
+struct vec
 {
 	distance a[DIM];
 
-    cord(distance x = 0, distance y = 0, distance z = 0) {
+    vec(distance x = 0, distance y = 0, distance z = 0) {
         assert(DIM == 3);
         a[0] = x;
         a[1] = y;
         a[2] = z;
     }
 
-	cord & operator +=(cord rhs)
+	vec & operator +=(vec rhs)
 	{
 		for(int i=0;i<DIM;i++)
 			a[i]+=rhs.a[i];
 	}
-	cord & operator -=(cord rhs)
+	vec & operator -=(vec rhs)
 	{
 		for(int i=0;i<DIM;i++)
 			a[i]-=rhs.a[i];
 	}
-	cord & operator *=(double rhs)
+	vec & operator *=(double rhs)
 	{
 		for(int i=0;i<DIM;i++)
 			a[i]*=rhs;
@@ -40,15 +40,15 @@ struct cord
         return a[idx];
     }
 };
-inline cord operator+(cord lhs, const cord& rhs) {
+inline vec operator+(vec lhs, const vec& rhs) {
     lhs += rhs;
     return lhs;
 }
-inline cord operator-(cord lhs, const cord& rhs) {
+inline vec operator-(vec lhs, const vec& rhs) {
     lhs -= rhs;
     return lhs;
 }
-inline cord operator*(double lhs, cord rhs) {
+inline vec operator*(double lhs, vec rhs) {
     rhs *= lhs;
     return rhs;
 }

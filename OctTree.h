@@ -9,11 +9,11 @@
 struct bounding_box {
     bounding_box();
     //Create a bounding box from two opposing corners
-    bounding_box(const cord& pos1, const cord& pos2);
+    bounding_box(const vec& pos1, const vec& pos2);
 
     //Check if the box contains the `position`
-    bool contains(const cord& position);
-    cord center;
+    bool contains(const vec& position);
+    vec center;
     double length;
 };
 
