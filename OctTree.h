@@ -4,10 +4,23 @@
 #include <memory>
 
 #include "units.h"
-#include "body.h"
+#include "Body.h"
+
+struct bounding_box {
+    bounding_box();
+    //Create a bounding box from two opposing corners
+    bounding_box(const cord& pos1, const cord& pos2);
+
+    //Check if the box contains the `position`
+    bool contains(const cord& position);
+    cord center;
+    double length;
+};
 
 class Cell {
 public:
+    Cell();
+    Cell(bounding_box box);
 
     void insert_body(const body& body);
 
@@ -20,8 +33,9 @@ public:
         }
     }
 private:
-    double length;
-    cord center;
+    friend class OctTree;
+    bounding_box bounds;
+    const body* b;
     std::array<std::unique_ptr<Cell>, 8> children;
 };
 

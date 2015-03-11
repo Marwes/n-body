@@ -1,5 +1,7 @@
 #ifndef UNITS_H
 #define UNITS_H
+#include <cstddef>
+#include <assert.h>
 
 typedef  double mass;
 typedef  double distance;
@@ -7,6 +9,13 @@ typedef  double distance;
 struct cord
 {
 	distance a[DIM];
+
+    cord(distance x = 0, distance y = 0, distance z = 0) {
+        assert(DIM == 3);
+        a[0] = x;
+        a[1] = y;
+        a[2] = z;
+    }
 
 	cord & operator +=(cord rhs)
 	{
