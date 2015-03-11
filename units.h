@@ -1,10 +1,13 @@
 #ifndef UNITS_H
 #define UNITS_H
 #include <cstddef>
+#include <cmath>
 #include <assert.h>
 
 typedef  double mass;
 typedef  double distance;
+
+const distance G = 6.67384 / 10000000000.0;// 10^-11 m3 kg-1 s-2
 
 struct vec
 {
@@ -15,6 +18,17 @@ struct vec
         a[0] = x;
         a[1] = y;
         a[2] = z;
+    }
+
+    distance sqnorm() const {
+        distance result = 0;
+		for(int i = 0; i < DIM; i++)
+			result += a[i] * a[i];
+        return result;
+    }
+
+    distance norm() const {
+        return std::sqrt(sqnorm());
     }
 
 	vec & operator +=(vec rhs)

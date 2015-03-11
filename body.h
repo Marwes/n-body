@@ -9,6 +9,7 @@ public:
 	vec pos;
 	//vel
 	vec vel;
+    vec forceFrom(const body& other) const;
 	void update(body* put, vec acc);
 };
 
