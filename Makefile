@@ -2,7 +2,7 @@ CC=g++ -std=c++11
 CFLAGS=-O3 -DDIM=3 -DROUNDS=1000 -DDELTA=0.1
 bin=bin/
 
-all: reset comp clean
+all: reset comp
 
 comp:	N2single N2parallel BH_single BH_parallel generator
 
@@ -31,6 +31,7 @@ BH_parallel:	body.o
 
 
 clean:
+	rm *.o
 
 reset:
 	#reset
