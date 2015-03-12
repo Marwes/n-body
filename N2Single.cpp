@@ -13,7 +13,7 @@ double dt=DELTA;
 
 void setup(int argc, char** argv,std::vector<body> & v_b,int & iters,double & dt)
 {
-	v_b=readBodies(argv[1],TEXT_MODE);
+	char * file="output_N2single";
 	dt=1;
 	for (int n=1;n<argc;n++)
 	{
@@ -30,9 +30,16 @@ void setup(int argc, char** argv,std::vector<body> & v_b,int & iters,double & dt
 			iters=atoi(argv[n]);
 			continue;
 		}
+		if(!strcmp(argv[n],"-f"))
+		{
+			n++;
+			file=argv[n];
+			continue;
+		}
 		std::cerr<<"Error argument dont match\n";
 		exit(1);
 	}
+	v_b=readBodies(file,TEXT_MODE);
 
 }
 int main(int argc, char** argv)
