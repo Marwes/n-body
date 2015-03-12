@@ -16,7 +16,7 @@ int main(int argc, char ** argv)
 	int n=atoi(argv[2]);
 	std::vector<body> bodies;
 
-	std::uniform_real_distribution<double> pos_rand(0,100);
+	std::uniform_real_distribution<double> pos_rand(-10000,10000);
 	std::uniform_real_distribution<double> vel_rand(0,100);
 	std::exponential_distribution<double> mass_rand(1.0/10000000000L);
 	std::default_random_engine re;
