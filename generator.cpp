@@ -17,7 +17,7 @@ int main(int argc, char ** argv)
 	std::vector<body> bodies;
 
 	std::uniform_real_distribution<double> pos_rand(-10000,10000);
-	std::uniform_real_distribution<double> vel_rand(0,100);
+	std::uniform_real_distribution<double> vel_rand(-10,10);
 	std::exponential_distribution<double> mass_rand(1.0/10000000000L);
 	std::default_random_engine re;
 	for(int i=0;i<n;i++)
