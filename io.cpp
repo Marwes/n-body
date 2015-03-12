@@ -3,12 +3,14 @@
 #include <fstream>
 
 
-std::vector<body> readBodies_text(char * file)
+std::vector<body> readBodies_text(const char * file)
 {
 	std::vector<body> ret;
 	
 	std::ifstream in(file);
-	while(!in.eof())
+	int rows;
+	in>>rows;
+	for (int i=0;i<rows;i++)
 	{
 		body b;
 		in>>b.m;
@@ -26,7 +28,7 @@ std::vector<body> readBodies_text(char * file)
 }
 
 
-std::vector<body> readBodies(char * file, int mode)
+std::vector<body> readBodies(const char * file, int mode)
 {
 	switch (mode)
 	{
@@ -40,10 +42,11 @@ std::vector<body> readBodies(char * file, int mode)
 
 	
 }
-void writeBodies_text(char * file,std::vector<body> bodies)
+void writeBodies_text(const char * file,std::vector<body> bodies)
 {
 	
 	std::ofstream out(file);
+	out<<bodies.size();
 	for(int i=0;i<bodies.size();i++)
 	{
 		//std::cout <<i<<"\n";
@@ -61,7 +64,7 @@ void writeBodies_text(char * file,std::vector<body> bodies)
 	return ;
 }
 
-void writeBodies(char * file, int mode,std::vector<body> bodies)
+void writeBodies(const char * file, int mode,std::vector<body> bodies)
 {
 	switch (mode)
 	{
