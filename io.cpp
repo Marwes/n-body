@@ -46,7 +46,7 @@ void writeBodies_text(char * file,std::vector<body> bodies)
 	std::ofstream out(file);
 	for(int i=0;i<bodies.size();i++)
 	{
-		std::cout <<i<<"\n";
+		//std::cout <<i<<"\n";
 		body b=bodies[i];
 		out<<"\n"<<b.m;
 		for(int i=0;i<DIM;i++)
