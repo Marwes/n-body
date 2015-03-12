@@ -23,6 +23,11 @@ public:
     Cell(bounding_box box);
 
     void insert_body(const body& body);
+    bool is_external() const;
+
+    const body* getBody() const {
+        return b;
+    }
 
     template<typename F>
     void depth_first(const F& f) {
@@ -34,7 +39,10 @@ public:
     }
 private:
     friend class OctTree;
+    bool external;
     bounding_box bounds;
+    vec massCenter;
+    double mass;
     const body* b;
     std::array<std::unique_ptr<Cell>, 8> children;
 };
@@ -49,3 +57,5 @@ public:
 private:
     Cell cell;
 };
+
+void verifyTree(OctTree& tree, int n_bodies);
