@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "units.h"
-#include "Body.h"
+#include "body.h"
 
 struct bounding_box {
     bounding_box();
