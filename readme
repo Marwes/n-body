@@ -1,0 +1,9 @@
+programs located bin folder
+
+
+
+usage 
+	-i		number of iterations		int
+	-f		senario file				file
+	-dt		delta t for simiulation		float
+	-n		number of threads			int

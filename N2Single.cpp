@@ -7,13 +7,13 @@
 #include <string>
 #include <cstdlib>
 #include <cstring>
-#define PROGRES_BAR_INC 100
+#define PROGRES_BAR_INC 10
 
 double dt=DELTA;
 
 void setup(int argc, char** argv,std::vector<body> & v_b,int & iters,double & dt)
 {
-	char * file="output_N2single";
+	char * file="data/test_1";
 	dt=1;
 	for (int n=1;n<argc;n++)
 	{
@@ -34,6 +34,12 @@ void setup(int argc, char** argv,std::vector<body> & v_b,int & iters,double & dt
 		{
 			n++;
 			file=argv[n];
+			continue;
+		}
+		if(!strcmp(argv[n],"-n"))
+		{
+			n++;
+			std::cerr<<"not parallel, ignoreing\n";
 			continue;
 		}
 		std::cerr<<"Error argument dont match\n";
@@ -58,18 +64,20 @@ int main(int argc, char** argv)
 
     for (int ii = 0; ii < iterations; ++ii) 
 	{
-		if((ii%(iterations/PROGRES_BAR_INC))==0)	
+		if((ii%(iterations/PROGRES_BAR_INC +1))==0)	
 			std::cout<<ii<<"/"<<iterations<<"\n";
         for (int bi = 0; bi < numBodies; ++bi) 
 		{
-            vec force=zero;
+            forces[bi]=zero;
+			vec force;
             const body& self = bodies[bi];
-            for (int bj = 0; bj < numBodies; ++bj) 
+            for (int bj = bi+1; bj < numBodies; ++bj) 
 			{
-			
-                force += self.forceFrom(bodies[bj]);
+				
+                force = self.forceFrom(bodies[bj]);
+				forces[bi]+=force;
+				forces[bj]+=force;
             }
-            forces[bi] = force;
         }
         for (int bi = 0; bi < numBodies; ++bi) {
             bodies[bi].update(forces[bi],dt);
