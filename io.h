@@ -5,7 +5,7 @@
 
 #define TEXT_MODE 0 
 
-std::vector<body> readBodies(char * file);
+std::vector<body> readBodies(char * file,int mode);
 void writeBodies(char * file, int mode,std::vector<body> bodies);
 
 

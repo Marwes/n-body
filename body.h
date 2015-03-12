@@ -10,7 +10,7 @@ public:
 	//vel
 	vec vel;
     vec forceFrom(const body& other) const;
-	void update(body* put, vec acc);
+	void update(vec acc,double dt);
 };
 
 #endif

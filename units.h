@@ -66,4 +66,16 @@ inline vec operator*(double lhs, vec rhs) {
     rhs *= lhs;
     return rhs;
 }
+inline vec operator/(vec lhs, double rhs) {
+    vec v;
+	for(int i=0;i<DIM;i++)
+		v[i]=lhs[i]/rhs;
+    return v;
+}
+inline vec operator*(vec lhs, double rhs) {
+    vec v;
+	for(int i=0;i<DIM;i++)
+		v[i]=lhs[i]*rhs;
+    return v;
+}
 #endif
