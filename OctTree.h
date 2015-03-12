@@ -1,4 +1,5 @@
 #pragma once
+#include <iosfwd>
 #include <array>
 #include <vector>
 #include <memory>
@@ -17,6 +18,8 @@ struct bounding_box {
     double length;
 };
 
+std::ostream& operator << (std::ostream& o, const bounding_box& b);
+
 class Cell {
 public:
     Cell();
@@ -29,6 +32,14 @@ public:
         return b;
     }
 
+    const vec& getCenterOfMass() const {
+        return massCenter;
+    }
+
+    const double getMass() const {
+        return mass;
+    }
+
     template<typename F>
     void depth_first(const F& f) {
         for (auto& child: children) {
@@ -38,6 +49,7 @@ public:
         }
     }
 private:
+    void insert_body(Cell& cell, const body& newBody);
     friend class OctTree;
     bool external;
     bounding_box bounds;
@@ -49,7 +61,7 @@ private:
 
 class OctTree {
 public:
-    OctTree(const std::vector<body>& bodies);
+    OctTree(const std::vector<body>& bodies, bounding_box bounds);
     template<typename F>
     void depth_first(const F& f) {
         cell.depth_first(f);
