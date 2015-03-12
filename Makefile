@@ -29,7 +29,7 @@ N2single: body.o N2Single.cpp IO.o
 
 N2parallel:	body.o
 
-BH_single:	body.o OctTree.o BH_single.cpp
+BH_single:	body.o OctTree.o IO.o BH_single.cpp
 	$(CC) $(CFLAGS) -o $(addprefix $(bin), $@) $^
 
 BH_parallel:	body.o
