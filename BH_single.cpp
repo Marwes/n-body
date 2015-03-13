@@ -4,6 +4,7 @@
 #include "body.h"
 #include "OctTree.h"
 #include "io.h"
+#include "debug.h"
 
 
 int main(int argc, char** argv) 
@@ -17,13 +18,13 @@ int main(int argc, char** argv)
         }
     }
     std::vector<vec> forces(bodies.size());
-    std::cerr << bodies.size() << " bodies" << std::endl;
+    DPRINT(bodies.size() << " bodies");
     const int iterations = 100;
     const double dt = 0.1;
     const double theta = 0.5;
     bounding_box bounds = bounding_box(-3 * max_position, 3 * max_position);
     for (int ii = 0; ii < iterations; ++ii) {
-        std::cerr << "Begin iteration " << ii << std::endl;
+        DPRINT("Begin iteration " << ii);
         OctTree tree(bodies, bounds);
         verifyTree(tree, bodies.size());
         for (int bi = 0; bi < bodies.size(); ++bi) {

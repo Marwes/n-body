@@ -1,6 +1,7 @@
 #include "OctTree.h"
 #include <assert.h>
 #include <iostream>
+#include "debug.h"
 
 Cell::Cell()
     : Cell(bounding_box()) {
@@ -92,12 +93,12 @@ OctTree::OctTree(const std::vector<body>& bodies, bounding_box bounds)
     : cell(bounds) {
     for (auto& body: bodies) {
         if (!cell.bounds.contains(body.pos)) {
-            std::cerr << "Increase size of " << cell.bounds << " for " << body.pos << std::endl; 
+            DPRINT("Increase size of " << cell.bounds << " for " << body.pos); 
             vec direction = body.pos - bounds.center;
             direction[0] = sign(direction[0]);
             direction[1] = sign(direction[1]);
             direction[2] = sign(direction[2]);
-            std::cerr << "Direction " << direction << std::endl;
+            DPRINT("Direction " << direction);
             vec corner1 = cell.bounds.center - (cell.bounds.length / 2) * direction;
             vec corner2 = corner1 + cell.bounds.length * 2 * direction;
 
@@ -106,7 +107,7 @@ OctTree::OctTree(const std::vector<body>& bodies, bounding_box bounds)
             cell.getCell(newCell.bounds.center) = std::move(newCell);
         }
         if (!cell.bounds.contains(body.pos)) {
-            std::cerr << cell.bounds << " " << body.pos << std::endl;
+            DPRINT(cell.bounds << " " << body.pos);
             assert(cell.bounds.contains(body.pos));
         }
         cell.insert_body(body);
