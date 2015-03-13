@@ -1,6 +1,5 @@
 CC=g++ -std=c++11
-CFLAGS=-O3 -DDIM=3 -DROUNDS=1000 -DDELTA=0.1 
-omp=-fopenmp
+CFLAGS=-O3 -DDIM=3 -DROUNDS=1000 -DDELTA=0.1 -fopenmp
 bin=bin/
 
 all: reset comp
@@ -26,10 +25,10 @@ body.o: body.cpp body.h
 	$(CC) $(CFLAGS) -c -o $@ body.cpp
 
 N2single: body.o N2Single.cpp IO.o
-	$(CC) $(CFLAGS) $(omp) -o $(addprefix $(bin), $@ ) $(filter %.cpp %.o,$^)
+	$(CC) $(CFLAGS) -o $(addprefix $(bin), $@ ) $(filter %.cpp %.o,$^)
 
 N2parallel:	body.o N2Parallel.cpp IO.o
-	$(CC) $(CFLAGS) $(omp) -o $(addprefix $(bin), $@ ) $(filter %.cpp %.o,$^)
+	$(CC) $(CFLAGS) -o $(addprefix $(bin), $@ ) $(filter %.cpp %.o,$^)
 
 BH_single:	body.o OctTree.o IO.o BH_single.cpp
 	$(CC) $(CFLAGS) -o $(addprefix $(bin), $@) $^
