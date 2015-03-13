@@ -20,6 +20,7 @@ struct vec
         a[2] = z;
     }
 
+    //Calculates the squared norm of the vector
     distance sqnorm() const {
         distance result = 0;
 		for(int i = 0; i < DIM; i++)
@@ -27,6 +28,7 @@ struct vec
         return result;
     }
 
+    //Calculates the the norm of the vector
     distance norm() const {
         return std::sqrt(sqnorm());
     }

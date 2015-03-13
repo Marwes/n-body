@@ -30,6 +30,8 @@ int main(int argc, char** argv)
             body& self = bodies[bi];
             vec force;
             tree.depth_first([&] (const Cell& cell) {
+                //If the cell is external and holds a body we calculate the force
+                //from that body directly
                 if (cell.is_external()) {
                     if (cell.getBody() != nullptr) {
                         force += self.forceFrom(*cell.getBody());
@@ -37,12 +39,15 @@ int main(int argc, char** argv)
                     return Traverse::Stop;
                 }
                 else {
+                    //If the cell is internal and the cell is far enough away we can
+                    //approximate the force by using the cells mass and center of mass
                     double h = cell.getLength() / (self.pos - cell.getCenterOfMass()).norm();
                     if (h < theta) {
                         force += self.forceFrom(cell.getCenterOfMass(), cell.getMass());
                         return Traverse::Stop;
                     }
                     else {
+                        //Not far enough so continue into smaller cells
                         return Traverse::Continue;
                     }
                 }
@@ -52,6 +57,7 @@ int main(int argc, char** argv)
         for (int bi = 0; bi < bodies.size(); ++bi) {
             bodies[bi].update(forces[bi], dt);
         }
+        //Cache the bounds for the next iteration to avoid unnecessary resizing
         bounds = tree.getBounds();
     }
 	writeBodies("output_BHsingle", 0, bodies);

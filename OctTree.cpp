@@ -89,8 +89,7 @@ double sign(double x) {
 }
 
 OctTree::OctTree(const std::vector<body>& bodies, bounding_box bounds)
-    : cell(bounds)
-    , bodies_out_of_bounds(0) {
+    : cell(bounds) {
     for (auto& body: bodies) {
         if (!cell.bounds.contains(body.pos)) {
             std::cerr << "Increase size of " << cell.bounds << " for " << body.pos << std::endl; 
@@ -172,5 +171,5 @@ void verifyTree(OctTree& tree, int n_bodies) {
         }
         return Traverse::Continue;
     });
-    assert(bodies_in_tree + tree.bodies_out_of_bounds == n_bodies);
+    assert(bodies_in_tree == n_bodies);
 }
