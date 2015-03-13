@@ -11,7 +11,8 @@
 #define PROGRES_BAR_INC 10
 
 
-void runN2_parallel(std::vector<body>& bodies, const int iterations, const double theta, const int threads, const double dt) {
+void runN2_parallel(std::vector<body>& bodies, const int iterations, const double theta, const int threads, const double dt) 
+{
 	vec zero;
     int numBodies = bodies.size();
     std::vector<vec> forcematrix(numBodies * threads);
