@@ -6,10 +6,8 @@
 #include "io.h"
 #include "debug.h"
 
-
-int main(int argc, char** argv) 
-{
-    std::vector<body> bodies = readBodies("data/test_1", TEXT_MODE);
+void runBH_single(std::vector<body>& bodies, const int iterations, const double theta, const int workers, const double dt) {
+    std::vector<vec> forces(bodies.size());
     vec max_position;
     for (const body& b: bodies) {
         for (int i = 0; i < DIM; ++i) {
@@ -17,11 +15,6 @@ int main(int argc, char** argv)
                 max_position[i] = std::abs(b.pos[0]);
         }
     }
-    std::vector<vec> forces(bodies.size());
-    DPRINT(bodies.size() << " bodies");
-    const int iterations = 100;
-    const double dt = 0.1;
-    const double theta = 0.5;
     bounding_box bounds = bounding_box(-3 * max_position, 3 * max_position);
     for (int ii = 0; ii < iterations; ++ii) {
         DPRINT("Begin iteration " << ii);
@@ -61,6 +54,9 @@ int main(int argc, char** argv)
         //Cache the bounds for the next iteration to avoid unnecessary resizing
         bounds = tree.getBounds();
     }
-	writeBodies("output_BHsingle", 0, bodies);
+}
+
+int main(int argc, char** argv) {
+    NBodyRunner(argc, argv, "output_BHsingle", runBH_single);
     return 0;
 }

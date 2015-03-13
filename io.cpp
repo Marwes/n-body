@@ -2,6 +2,8 @@
 #include <iostream>
 #include <random>
 #include <fstream>
+#include <omp.h>
+#include <string.h>
 
 std::vector<body> create_bodies(int n)
 {
@@ -135,4 +137,56 @@ void writeBodies(const char * file, int mode,std::vector<body> bodies)
 	}
 
 	
+}
+
+void setup(int argc, char** argv,std::vector<body> & v_b,int & iters,double & dt, int& threads)
+{
+	char * file="data/test_1";
+	dt=1;
+	for (int n=1;n<argc;n++)
+	{
+		//std::cout<<n<<"\t"<<argv[n]<<"\n";
+		if(!strcmp(argv[n],"-dt"))
+		{
+			n++;
+			dt=atof(argv[n]);
+			continue;
+		}
+		if(!strcmp(argv[n],"-i"))
+		{
+			n++;
+			iters=atoi(argv[n]);
+			continue;
+		}
+		if(!strcmp(argv[n],"-f"))
+		{
+			n++;
+			file=argv[n];
+			continue;
+		}
+		if(!strcmp(argv[n],"-n"))
+		{
+			n++;
+			threads=atoi(argv[n]);
+			continue;
+		}
+		std::cerr<<"Error argument dont match\n";
+		exit(1);
+	}
+	v_b=readBodies(file,TEXT_MODE);
+	omp_set_num_threads(threads);
+}
+
+void NBodyRunner(int argc, char** argv, const char* outputfile, NBodyFunc func) {
+    std::vector<body> bodies = readBodies("data/test_1", TEXT_MODE);
+    int iterations = 100;
+    double dt = 0.1;
+    const double theta = 0.5;
+    int threads = 1;
+	setup(argc, argv, bodies, iterations, dt, threads);
+	double start=omp_get_wtime(); 
+    func(bodies, iterations, theta, threads, dt);
+	double end=omp_get_wtime(); 
+	std::cout<<(end-start)<<"\t";
+	writeBodies(outputfile, 0, bodies);
 }

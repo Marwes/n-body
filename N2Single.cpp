@@ -2,73 +2,12 @@
 #include <vector>
 #include "body.h"
 #include "io.h"
-#include <functional> 
-#include <iostream>
-#include <string>
-#include <cstdlib>
-#include <omp.h> //for timing
-#include <cstring>
-#define PROGRES_BAR_INC 10
-
-double dt=DELTA;
 
 
-
-void setup(int argc, char** argv,std::vector<body> & v_b,int & iters,double & dt)
-{
-	char * file="data/test_1";
-	dt=1;
-	for (int n=1;n<argc;n++)
-	{
-		//std::cout<<n<<"\t"<<argv[n]<<"\n";
-		if(!strcmp(argv[n],"-dt"))
-		{
-			n++;
-			dt=atof(argv[n]);
-			continue;
-		}
-		if(!strcmp(argv[n],"-i"))
-		{
-			n++;
-			iters=atoi(argv[n]);
-			continue;
-		}
-		if(!strcmp(argv[n],"-f"))
-		{
-			n++;
-			file=argv[n];
-			continue;
-		}
-		if(!strcmp(argv[n],"-n"))
-		{
-			n++;
-			std::cerr<<"not parallel, ignoreing\n";
-			continue;
-		}
-		std::cerr<<"Error argument dont match\n";
-		exit(1);
-	}
-	v_b=readBodies(file,TEXT_MODE);
-
-}
-int main(int argc, char** argv)
-{
-	double start,end;
-	vec zero;
-	for(int a=0;a<DIM;a++)
-		zero[a]=0;
-    int iterations=100000 ;
-    std::vector<body> bodies;
-	
-	//setup(argc,argv,bodies,iterations,dt);
-	double theta;
-	int threads;
-	init(argc,argv,bodies,iterations,dt,theta,threads);
-	//std::cout<<"number of bodies = "<<bodies.size()<<std::endl;
-	int numBodies=bodies.size();
+void runN2_single(std::vector<body>& bodies, const int iterations, const double theta, const int threads, const double dt) {
+    vec zero;
+    int numBodies = bodies.size();
     std::vector<vec> forces(bodies.size());
-	//std::cout<<"iterations "<<iterations<<"\tdt = "<<dt<<"\n";
-	start=omp_get_wtime(); 
     for (int ii = 0; ii < iterations; ++ii) 
 	{
 		//if((ii%(iterations/PROGRES_BAR_INC +1))==0)	
@@ -90,8 +29,10 @@ int main(int argc, char** argv)
             bodies[bi].update(forces[bi],dt);
         }
     }
-	end=omp_get_wtime(); 
-	std::cout<<(end-start)<<"\t";
-	writeBodies("output_N2single", 0,bodies);
+}
+
+int main(int argc, char** argv)
+{
+	NBodyRunner(argc, argv, "output_N2single", runN2_single);
     return 0;
 }
