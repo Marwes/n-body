@@ -8,6 +8,8 @@ void runN2_single(std::vector<body>& bodies, const int iterations, const double 
     vec zero;
     int numBodies = bodies.size();
     std::vector<vec> forces(bodies.size());
+
+
     for (int ii = 0; ii < iterations; ++ii) 
 	{
 		//if((ii%(iterations/PROGRES_BAR_INC +1))==0)	

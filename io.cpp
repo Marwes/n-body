@@ -60,6 +60,7 @@ int init(int argc,char **argv,std::vector<body> & ret_bodies,int & iters,double 
 	}
 	else 
 		threads=1;
+	return 0;
 }
 
 

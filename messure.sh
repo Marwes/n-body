@@ -1,7 +1,9 @@
-num_tests=10
-iters=50000
+num_tests=1
+#iters=50000
+iters=10
+theta=0.5
 threads=(1 2 4)
-programs=(./bin/N2single ./bin/N2parallel)
+programs=(./bin/N2single ./bin/N2parallel ./bin/BH_single)
 tests=(data/120_bodies data/180_bodies data/240_bodies)
 
 
@@ -25,10 +27,10 @@ do
 		then
 			for np in ${threads[*]}
 			do
-				run_test $p -f $t -i $iters -n $np
+				run_test $p $t $iters $theta $np
 			done
 		else
-			run_test $p -f $t -i $iters
+			run_test $p $t $iters
 		fi
 	done
 done
