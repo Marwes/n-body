@@ -1,5 +1,5 @@
 CC=g++ -std=c++11
-CFLAGS=-O3 -DDIM=3 -DROUNDS=1000 -DDELTA=0.1 -fopenmp
+CFLAGS=-Ofast  -DDIM=3 -DROUNDS=1000 -DDELTA=0.1 -fopenmp
 bin=bin/
 
 all: reset comp

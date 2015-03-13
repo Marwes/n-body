@@ -1,6 +1,6 @@
 num_tests=1
-#iters=50000
-iters=10
+iters=50000
+##iters=10
 theta=0.5
 threads=(1 2 4)
 programs=(./bin/N2single ./bin/N2parallel ./bin/BH_single)

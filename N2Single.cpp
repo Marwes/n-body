@@ -27,7 +27,8 @@ void runN2_single(std::vector<body>& bodies, const int iterations, const double 
 				forces[bj]+=force;
             }
         }
-        for (int bi = 0; bi < numBodies; ++bi) {
+        for (int bi = 0; bi < numBodies; ++bi) 
+		{
             bodies[bi].update(forces[bi],dt);
         }
     }
