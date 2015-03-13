@@ -30,14 +30,22 @@ int main(int argc, char** argv)
             body& self = bodies[bi];
             vec force;
             tree.depth_first([&] (const Cell& cell) {
-                if (cell.is_external() && cell.getBody() != nullptr) {
-                    force += self.forceFrom(*cell.getBody());
+                if (cell.is_external()) {
+                    if (cell.getBody() != nullptr) {
+                        force += self.forceFrom(*cell.getBody());
+                    }
+                    return Traverse::Stop;
                 }
-                else if (!cell.is_external() && false) {//Angle
-                    force += self.forceFrom(cell.getCenterOfMass(), cell.getMass());
-                    return false;
+                else {
+                    double h = cell.getLength() / (self.pos - cell.getCenterOfMass()).norm();
+                    if (h < theta) {
+                        force += self.forceFrom(cell.getCenterOfMass(), cell.getMass());
+                        return Traverse::Stop;
+                    }
+                    else {
+                        return Traverse::Continue;
+                    }
                 }
-                return true;
             });
             forces[bi] = force;
         }

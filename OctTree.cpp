@@ -3,13 +3,14 @@
 #include <iostream>
 
 Cell::Cell()
-    : b(nullptr)
-    , external(true) {
+    : Cell(bounding_box()) {
 }
 Cell::Cell(bounding_box box)
     : bounds(box)
     , b(nullptr)
-    , external(true) {
+    , external(true)
+    , massCenter(box.center)
+    , mass(0) {
 }
 Cell::Cell(Cell&& other)
     : b(other.b)
@@ -127,6 +128,16 @@ void Cell::insert_body(Cell& cell, const body& newBody) {
     this->massCenter = center + cell.getMass() * cell.getCenterOfMass();
     this->mass = mass + cell.getMass();
 
+    //Do it the easy way to make sure it is correct
+    this->mass = 0;
+    this->massCenter = vec();
+    for (auto& child: children) {
+        if (child != nullptr) {
+            this->mass += child->getMass();
+            this->massCenter += child->getMass() * child->getCenterOfMass();
+        }
+    }
+    this->massCenter = this->massCenter / this->getMass();
 }
 void Cell::insert_body(const body& newBody) {
     assert(bounds.contains(newBody.pos));
@@ -159,7 +170,7 @@ void verifyTree(OctTree& tree, int n_bodies) {
         if (cell.getBody() != nullptr) {
             bodies_in_tree += 1;
         }
-        return true;
+        return Traverse::Continue;
     });
     assert(bodies_in_tree + tree.bodies_out_of_bounds == n_bodies);
 }

@@ -20,6 +20,11 @@ struct bounding_box {
 
 std::ostream& operator << (std::ostream& o, const bounding_box& b);
 
+enum class Traverse {
+    Continue,
+    Stop
+};
+
 class Cell {
 public:
     Cell();
@@ -39,16 +44,26 @@ public:
         return massCenter;
     }
 
-    const double getMass() const {
+    double getMass() const {
         return mass;
+    }
+
+    double getLength() const {
+        return bounds.length;
     }
 
     template<typename F>
     void depth_first(const F& f) {
-        for (auto& child: children) {
-            if (child != nullptr && (f(*child))) {
-                child->depth_first(f);
-            }
+        switch (f(*this)) {
+            case Traverse::Continue:
+                for (auto& child: children) {
+                    if (child != nullptr) {
+                        child->depth_first(f);
+                    }
+                }
+                break;
+            case Traverse::Stop:
+                break;
         }
     }
 private:
