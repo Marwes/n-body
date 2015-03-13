@@ -26,7 +26,7 @@ body.o: body.cpp body.h
 	$(CC) $(CFLAGS) -c -o $@ body.cpp
 
 N2single: body.o N2Single.cpp IO.o
-	$(CC) $(CFLAGS) -o $(addprefix $(bin), $@ ) $(filter %.cpp %.o,$^)
+	$(CC) $(CFLAGS) $(omp) -o $(addprefix $(bin), $@ ) $(filter %.cpp %.o,$^)
 
 N2parallel:	body.o N2Parallel.cpp IO.o
 	$(CC) $(CFLAGS) $(omp) -o $(addprefix $(bin), $@ ) $(filter %.cpp %.o,$^)

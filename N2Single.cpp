@@ -6,10 +6,13 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
+#include <omp.h> //for timing
 #include <cstring>
 #define PROGRES_BAR_INC 10
 
 double dt=DELTA;
+
+
 
 void setup(int argc, char** argv,std::vector<body> & v_b,int & iters,double & dt)
 {
@@ -17,7 +20,7 @@ void setup(int argc, char** argv,std::vector<body> & v_b,int & iters,double & dt
 	dt=1;
 	for (int n=1;n<argc;n++)
 	{
-		std::cout<<n<<"\t"<<argv[n]<<"\n";
+		//std::cout<<n<<"\t"<<argv[n]<<"\n";
 		if(!strcmp(argv[n],"-dt"))
 		{
 			n++;
@@ -50,6 +53,7 @@ void setup(int argc, char** argv,std::vector<body> & v_b,int & iters,double & dt
 }
 int main(int argc, char** argv)
 {
+	double start,end;
 	vec zero;
 	for(int a=0;a<DIM;a++)
 		zero[a]=0;
@@ -57,15 +61,15 @@ int main(int argc, char** argv)
     std::vector<body> bodies;
 	
 	setup(argc,argv,bodies,iterations,dt);
-	std::cout<<"number of bodies = "<<bodies.size()<<std::endl;
+	//std::cout<<"number of bodies = "<<bodies.size()<<std::endl;
 	int numBodies=bodies.size();
     std::vector<vec> forces(bodies.size());
-	std::cout<<"iterations "<<iterations<<"\tdt = "<<dt<<"\n";
-
+	//std::cout<<"iterations "<<iterations<<"\tdt = "<<dt<<"\n";
+	start=omp_get_wtime(); 
     for (int ii = 0; ii < iterations; ++ii) 
 	{
-		if((ii%(iterations/PROGRES_BAR_INC +1))==0)	
-			std::cout<<ii<<"/"<<iterations<<"\n";
+		//if((ii%(iterations/PROGRES_BAR_INC +1))==0)	
+		//	std::cout<<ii<<"/"<<iterations<<"\n";
         for (int bi = 0; bi < numBodies; ++bi) 
 		{
             forces[bi]=zero;
@@ -83,6 +87,8 @@ int main(int argc, char** argv)
             bodies[bi].update(forces[bi],dt);
         }
     }
+	end=omp_get_wtime(); 
+	std::cout<<(end-start)<<"\t";
 	writeBodies("output_N2single", 0,bodies);
     return 0;
 }
