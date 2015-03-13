@@ -23,9 +23,12 @@ std::ostream& operator << (std::ostream& o, const bounding_box& b);
 class Cell {
 public:
     Cell();
+    Cell(Cell&& other);
     Cell(bounding_box box);
+    Cell& operator=(Cell&& other);
 
     void insert_body(const body& body);
+    Cell& getCell(const vec& pos);
     bool is_external() const;
 
     const body* getBody() const {
@@ -66,6 +69,8 @@ public:
     void depth_first(const F& f) {
         cell.depth_first(f);
     }
+    const bounding_box& getBounds() const { return cell.bounds; }
+    int bodies_out_of_bounds;
 private:
     Cell cell;
 };

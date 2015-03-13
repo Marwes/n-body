@@ -11,6 +11,48 @@ Cell::Cell(bounding_box box)
     , b(nullptr)
     , external(true) {
 }
+Cell::Cell(Cell&& other)
+    : b(other.b)
+    , bounds(std::move(other.bounds))
+    , external(other.external)
+    , children(std::move(other.children)) {
+}
+Cell& Cell::operator=(Cell&& other) {
+    b = other.b;
+    mass = other.mass;
+    massCenter = std::move(other.massCenter);
+    bounds = std::move(other.bounds);
+    external = other.external;
+    children = std::move(other.children);
+    return *this;
+}
+
+Cell& Cell::getCell(const vec& pos) {
+    assert(bounds.contains(pos));
+    double half = bounds.length / 2;
+    vec center = bounds.center;
+    std::array<bounding_box, 8> child_boxes = {
+        bounding_box(center, center + vec(half, half, half)),
+        bounding_box(center, center + vec(half, half, -half)),
+        bounding_box(center, center + vec(half, -half, half)),
+        bounding_box(center, center + vec(half, -half, -half)),
+        bounding_box(center, center + vec(-half, half, half)),
+        bounding_box(center, center + vec(-half, half, -half)),
+        bounding_box(center, center + vec(-half, -half, half)),
+        bounding_box(center, center + vec(-half, -half, -half)),
+    };
+    for (int i = 0; i < child_boxes.size(); ++i) {
+        bounding_box box = child_boxes[i];
+        if (box.contains(pos)) {
+            if (children[i] == nullptr) {
+                children[i] = std::unique_ptr<Cell>(new Cell(box));
+                external = false;
+            }
+            return *children[i];
+        }
+    }
+    assert(false);
+}
 bounding_box::bounding_box() {
 }
 
@@ -40,9 +82,33 @@ std::ostream& operator << (std::ostream& o, const bounding_box& b)
     return o; 
 }
 
+double sign(double x) {
+    if (x > 0) return 1;
+    else return -1;
+}
+
 OctTree::OctTree(const std::vector<body>& bodies, bounding_box bounds)
-    : cell(bounds) {
+    : cell(bounds)
+    , bodies_out_of_bounds(0) {
     for (auto& body: bodies) {
+        if (!cell.bounds.contains(body.pos)) {
+            std::cerr << "Increase size of " << cell.bounds << " for " << body.pos << std::endl; 
+            vec direction = body.pos - bounds.center;
+            direction[0] = sign(direction[0]);
+            direction[1] = sign(direction[1]);
+            direction[2] = sign(direction[2]);
+            std::cerr << "Direction " << direction << std::endl;
+            vec corner1 = cell.bounds.center - (cell.bounds.length / 2) * direction;
+            vec corner2 = corner1 + cell.bounds.length * 2 * direction;
+
+            Cell newCell(bounding_box(corner1, corner2));
+            std::swap(cell, newCell);
+            cell.getCell(newCell.bounds.center) = std::move(newCell);
+        }
+        if (!cell.bounds.contains(body.pos)) {
+            std::cerr << cell.bounds << " " << body.pos << std::endl;
+            assert(cell.bounds.contains(body.pos));
+        }
         cell.insert_body(body);
     }
 }
@@ -71,29 +137,7 @@ void Cell::insert_body(const body& newBody) {
         this->mass = newBody.m;
         return;
     }
-    double half = bounds.length / 2;
-    vec center = bounds.center;
-    std::array<bounding_box, 8> child_boxes = {
-        bounding_box(center, center + vec(half, half, half)),
-        bounding_box(center, center + vec(half, half, -half)),
-        bounding_box(center, center + vec(half, -half, half)),
-        bounding_box(center, center + vec(half, -half, -half)),
-        bounding_box(center, center + vec(-half, half, half)),
-        bounding_box(center, center + vec(-half, half, -half)),
-        bounding_box(center, center + vec(-half, -half, half)),
-        bounding_box(center, center + vec(-half, -half, -half)),
-    };
-    for (int i = 0; i < child_boxes.size(); ++i) {
-        bounding_box box = child_boxes[i];
-        if (box.contains(newBody.pos)) {
-            if (children[i] == nullptr) {
-                children[i] = std::unique_ptr<Cell>(new Cell(box));
-                external = false;
-            }
-            this->insert_body(*children[i], newBody);
-            break;
-        }
-    }
+    this->insert_body(getCell(newBody.pos), newBody);
     if (this->b != nullptr) {
         //Since this node is no longer external (we just inserted another body)
         //we need to remove the body this cell owned and re insert it
@@ -117,5 +161,5 @@ void verifyTree(OctTree& tree, int n_bodies) {
         }
         return true;
     });
-    assert(bodies_in_tree == n_bodies);
+    assert(bodies_in_tree + tree.bodies_out_of_bounds == n_bodies);
 }
