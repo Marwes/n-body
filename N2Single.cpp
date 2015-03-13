@@ -60,7 +60,10 @@ int main(int argc, char** argv)
     int iterations=100000 ;
     std::vector<body> bodies;
 	
-	setup(argc,argv,bodies,iterations,dt);
+	//setup(argc,argv,bodies,iterations,dt);
+	double theta;
+	int threads;
+	init(argc,argv,bodies,iterations,dt,theta,threads);
 	//std::cout<<"number of bodies = "<<bodies.size()<<std::endl;
 	int numBodies=bodies.size();
     std::vector<vec> forces(bodies.size());

@@ -6,7 +6,8 @@
 #include "io.h"
 
 
-int main(int argc, char** argv) {
+int main(int argc, char** argv) 
+{
     std::vector<body> bodies = readBodies("data/test_1", TEXT_MODE);
     vec max_position;
     for (const body& b: bodies) {

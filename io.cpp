@@ -1,6 +1,64 @@
 #include "io.h"
 #include <iostream>
+#include <random>
 #include <fstream>
+
+std::vector<body> create_bodies(int n)
+{
+	std::vector<body> bodies;
+	std::uniform_real_distribution<double> pos_rand(-10000,10000);
+	std::uniform_real_distribution<double> vel_rand(-10,10);
+	std::exponential_distribution<double> mass_rand(1.0/10000000000L);
+	std::default_random_engine re;
+	for(int i=0;i<n;i++)
+	{
+		body b;
+		b.m=mass_rand(re);
+		for(int i=0;i<DIM;i++)
+		{
+			b.pos.a[i]=pos_rand(re);
+		}
+		for(int i=0;i<DIM;i++)
+		{
+			b.vel.a[i]=vel_rand(re);
+		}
+		bodies.push_back(b);
+	}
+	return bodies;
+}
+
+int init(int argc,char **argv,std::vector<body> & ret_bodies,int & iters,double & dt, double & theta,int & threads)
+{
+	int n=1;
+	//numbodies
+	int size=strtol(argv[n],nullptr,10);
+	if(size)
+	{
+		n++;
+		ret_bodies=create_bodies(size);
+	}
+	else
+	{
+		ret_bodies=readBodies(argv[n], 0);
+		n++;
+	}
+	//iters
+	iters=atoi(argv[n]);
+	n++;
+	//theta
+	if (argc==5)
+	{
+		theta=atof(argv[n]);
+		n++;
+	}
+	//threads
+	if(argc>3)
+	{
+		threads=atoi(argv[n]);
+	}
+	else 
+		threads=1;
+}
 
 
 std::vector<body> readBodies_text(const char * file)
