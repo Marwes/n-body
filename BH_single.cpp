@@ -16,6 +16,7 @@ void runBH_single(std::vector<body>& bodies, const int iterations, const double 
         }
     }
     bounding_box bounds = bounding_box(-3 * max_position, 3 * max_position);
+    const double sqTheta = theta * theta;
     for (int ii = 0; ii < iterations; ++ii) {
         DPRINT("Begin iteration " << ii);
         OctTree tree(bodies, bounds);
@@ -35,10 +36,10 @@ void runBH_single(std::vector<body>& bodies, const int iterations, const double 
                     //If the cell is internal and the cell is far enough away we can
                     //approximate the force by using the cells mass and center of mass
                     vec pos_diff = self.pos - cell.getCenterOfMass();
-                    double distance = pos_diff.norm();
-                    double h = cell.getLength() / distance;
-                    if (h < theta) {
-                        force += calcForce(pos_diff, distance, self.m, cell.getMass());
+                    double distance = pos_diff.sqnorm();
+                    double h = cell.getLength() * cell.getLength() / distance;
+                    if (h < sqTheta) {
+                        force += calcForce(pos_diff, std::sqrt(distance), self.m, cell.getMass());
                         return Traverse::Stop;
                     }
                     else {
