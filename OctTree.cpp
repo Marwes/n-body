@@ -43,18 +43,16 @@ Cell& Cell::getCell(const vec& pos) {
         bounding_box(center, center + vec(-half, -half, half)),
         bounding_box(center, center + vec(-half, -half, -half)),
     };
-    for (int i = 0; i < child_boxes.size(); ++i) {
-        bounding_box box = child_boxes[i];
-        if (box.contains(pos)) {
-            if (children[i] == nullptr) {
-                children[i] = std::unique_ptr<Cell>(new Cell(box));
-                external = false;
-            }
-            return *children[i];
-        }
+    vec dir = pos - center;
+    int i = (std::signbit(dir[0]) << 2) + (std::signbit(dir[1]) << 1) + std::signbit(dir[2]);
+    assert(i < children.size());
+    if (children[i] == nullptr) {
+        children[i] = std::unique_ptr<Cell>(new Cell(child_boxes[i]));
+        external = false;
     }
-    assert(false);
+    return *children[i];
 }
+
 bounding_box::bounding_box() {
 }
 

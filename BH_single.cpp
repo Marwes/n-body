@@ -19,7 +19,6 @@ void runBH_single(std::vector<body>& bodies, const int iterations, const double 
     for (int ii = 0; ii < iterations; ++ii) {
         DPRINT("Begin iteration " << ii);
         OctTree tree(bodies, bounds);
-        verifyTree(tree, bodies.size());
         for (int bi = 0; bi < bodies.size(); ++bi) {
             body& self = bodies[bi];
             vec force;
@@ -35,9 +34,11 @@ void runBH_single(std::vector<body>& bodies, const int iterations, const double 
                 else {
                     //If the cell is internal and the cell is far enough away we can
                     //approximate the force by using the cells mass and center of mass
-                    double h = cell.getLength() / (self.pos - cell.getCenterOfMass()).norm();
+                    vec pos_diff = self.pos - cell.getCenterOfMass();
+                    double distance = pos_diff.norm();
+                    double h = cell.getLength() / distance;
                     if (h < theta) {
-                        force += self.forceFrom(cell.getCenterOfMass(), cell.getMass());
+                        force += calcForce(pos_diff, distance, self.m, cell.getMass());
                         return Traverse::Stop;
                     }
                     else {

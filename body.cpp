@@ -1,8 +1,6 @@
 #include "body.h"
 #include <iostream>
 
-#define EPSILON 0.0001
-
 
 vec body::forceFrom(const body& other) const 
 {
