@@ -97,6 +97,9 @@ private:
 class OctTree {
 public:
     OctTree(const std::vector<body>& bodies, bounding_box bounds);
+
+    vec forceOnBody(const double sqTheta, const body& self);
+
     template<typename F>
     void depth_first(const F& f) {
         cell.depth_first(f);

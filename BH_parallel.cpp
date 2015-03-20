@@ -6,7 +6,7 @@
 #include "io.h"
 #include "debug.h"
 
-void runBH_single(std::vector<body>& bodies, const int iterations, const double theta, const int workers, const double dt) {
+void runBH_parallel(std::vector<body>& bodies, const int iterations, const double theta, const int workers, const double dt) {
     std::vector<vec> forces(bodies.size());
     vec max_position;
     for (const body& b: bodies) {
@@ -20,9 +20,11 @@ void runBH_single(std::vector<body>& bodies, const int iterations, const double 
     for (int ii = 0; ii < iterations; ++ii) {
         DPRINT("Begin iteration " << ii);
         OctTree tree(bodies, bounds);
+        #pragma omp parallel for
         for (int bi = 0; bi < bodies.size(); ++bi) {
             forces[bi] = tree.forceOnBody(sqTheta, bodies[bi]);
         }
+        #pragma omp parallel for
         for (int bi = 0; bi < bodies.size(); ++bi) {
             bodies[bi].update(forces[bi], dt);
         }
@@ -32,6 +34,6 @@ void runBH_single(std::vector<body>& bodies, const int iterations, const double 
 }
 
 int main(int argc, char** argv) {
-    NBodyRunner(argc, argv, "output_BHsingle", runBH_single);
+    NBodyRunner(argc, argv, "output_BHparallel", runBH_parallel);
     return 0;
 }

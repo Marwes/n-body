@@ -163,6 +163,36 @@ void Cell::insert_body(const body& newBody) {
     }
 }
 
+vec OctTree::forceOnBody(const double sqTheta, const body& self) {
+    vec force;
+    this->depth_first([&] (const Cell& cell) {
+        //If the cell is external and holds a body we calculate the force
+        //from that body directly
+        if (cell.is_external()) {
+            if (cell.getBody() != nullptr) {
+                force += self.forceFrom(*cell.getBody());
+            }
+            return Traverse::Stop;
+        }
+        else {
+            //If the cell is internal and the cell is far enough away we can
+            //approximate the force by using the cells mass and center of mass
+            vec pos_diff = self.pos - cell.getCenterOfMass();
+            double distance = pos_diff.sqnorm();
+            double h = cell.getLength() * cell.getLength() / distance;
+            if (h < sqTheta) {
+                force += calcForce(pos_diff, std::sqrt(distance), self.m, cell.getMass());
+                return Traverse::Stop;
+            }
+            else {
+                //Not far enough so continue into smaller cells
+                return Traverse::Continue;
+            }
+        }
+    });
+    return force;
+}
+
 bool Cell::is_external() const {
     return external; 
 }

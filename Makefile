@@ -33,7 +33,8 @@ N2parallel:	body.o N2Parallel.cpp IO.o
 BH_single:	body.o OctTree.o IO.o BH_single.cpp
 	$(CC) $(CFLAGS) -o $(addprefix $(bin), $@) $^
 
-BH_parallel:	body.o
+BH_parallel:	body.o OctTree.o IO.o BH_parallel.cpp
+	$(CC) $(CFLAGS) -o $(addprefix $(bin), $@) $^
 
 
 clean:
