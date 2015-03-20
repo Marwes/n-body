@@ -29,25 +29,31 @@ Cell& Cell::operator=(Cell&& other) {
     return *this;
 }
 
+
+static bounding_box getBox(int i, const vec& center, double half) {
+    switch (i) {
+        case 0: return bounding_box(center, center + vec(half, half, half));
+        case 1: return bounding_box(center, center + vec(half, half, -half));
+        case 2: return bounding_box(center, center + vec(half, -half, half));
+        case 3: return bounding_box(center, center + vec(half, -half, -half));
+        case 4: return bounding_box(center, center + vec(-half, half, half));
+        case 5: return bounding_box(center, center + vec(-half, half, -half));
+        case 6: return bounding_box(center, center + vec(-half, -half, half));
+        case 7: return bounding_box(center, center + vec(-half, -half, -half));
+        default: assert(0);
+    }
+}
+
 Cell& Cell::getCell(const vec& pos) {
     assert(bounds.contains(pos));
     double half = bounds.length / 2;
     vec center = bounds.center;
-    std::array<bounding_box, 8> child_boxes = {
-        bounding_box(center, center + vec(half, half, half)),
-        bounding_box(center, center + vec(half, half, -half)),
-        bounding_box(center, center + vec(half, -half, half)),
-        bounding_box(center, center + vec(half, -half, -half)),
-        bounding_box(center, center + vec(-half, half, half)),
-        bounding_box(center, center + vec(-half, half, -half)),
-        bounding_box(center, center + vec(-half, -half, half)),
-        bounding_box(center, center + vec(-half, -half, -half)),
-    };
     vec dir = pos - center;
     int i = (std::signbit(dir[0]) << 2) + (std::signbit(dir[1]) << 1) + std::signbit(dir[2]);
     assert(i < children.size());
     if (children[i] == nullptr) {
-        children[i] = std::unique_ptr<Cell>(new Cell(child_boxes[i]));
+        bounding_box box = getBox(i, center, half);
+        children[i] = std::unique_ptr<Cell>(new Cell(box));
         external = false;
     }
     return *children[i];
