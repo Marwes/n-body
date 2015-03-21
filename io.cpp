@@ -55,20 +55,20 @@ int init(int argc,char **argv, bool needThreads, bool needTheta, std::vector<bod
 	//iters
 	iters=atoi(argv[n]);
     n++;
-    if (needThreads) {
-        if (n >= argc) {
-            std::cerr << "Expected number of threads as argument " << n << std::endl;
-            exit(1);
-        }
-		threads=atoi(argv[n]);
-        n++;
-    }
     if (needTheta) {
         if (n >= argc) {
             std::cerr << "Expected theta as argument " << n << std::endl;
             exit(1);
         }
 		theta=atof(argv[n]);
+        n++;
+    }
+    if (needThreads) {
+        if (n >= argc) {
+            std::cerr << "Expected number of threads as argument " << n << std::endl;
+            exit(1);
+        }
+		threads=atoi(argv[n]);
         n++;
     }
 	return 0;
