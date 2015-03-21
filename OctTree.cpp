@@ -111,38 +111,13 @@ OctTree::OctTree(const std::vector<body>& bodies, bounding_box bounds)
             cell.getCell(newCell.bounds.center) = std::move(newCell);
         }
         if (!cell.bounds.contains(body.pos)) {
-            DPRINT(cell.bounds << " " << body.pos);
+            std::cerr << cell.bounds << " " << body.pos << std::endl;
             assert(cell.bounds.contains(body.pos));
         }
         cell.insert_body(body);
     }
 }
 
-void Cell::insert_body(Cell& cell, const body& newBody) {
-    //c => center of mass for current
-    //cN => center of mass for cell N
-    //wN => masses for cell N
-    //c = (c1 * w1 + c2 * w2) / (w1 + w2)
-    //c * (w1 + w2) - c2 * w2 = c1 * w1
-    //m = w1 + w2
-    //c' = c1 * w1 + c2' * w2'
-    vec center = getCenterOfMass() * getMass() - cell.getMass() * cell.getCenterOfMass();
-    double mass = getMass() - cell.getMass();
-    cell.insert_body(newBody);
-    this->massCenter = center + cell.getMass() * cell.getCenterOfMass();
-    this->mass = mass + cell.getMass();
-
-    //Do it the easy way to make sure it is correct
-    this->mass = 0;
-    this->massCenter = vec();
-    for (auto& child: children) {
-        if (child != nullptr) {
-            this->mass += child->getMass();
-            this->massCenter += child->getMass() * child->getCenterOfMass();
-        }
-    }
-    this->massCenter = this->massCenter / this->getMass();
-}
 void Cell::insert_body(const body& newBody) {
     assert(bounds.contains(newBody.pos));
     //If this is any external cell with no body we can insert it directly
@@ -152,14 +127,16 @@ void Cell::insert_body(const body& newBody) {
         this->mass = newBody.m;
         return;
     }
-    this->insert_body(getCell(newBody.pos), newBody);
+    getCell(newBody.pos).insert_body(newBody);
+    massCenter = (mass * massCenter + newBody.m * newBody.pos) / (mass + newBody.m);
+    mass += newBody.m;
     if (this->b != nullptr) {
         //Since this node is no longer external (we just inserted another body)
         //we need to remove the body this cell owned and re insert it
         assert(!this->is_external());
         const body* b = this->b;
         this->b = nullptr;
-        insert_body(*b);
+        getCell(b->pos).insert_body(*b);
     }
 }
 

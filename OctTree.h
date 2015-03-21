@@ -81,7 +81,6 @@ public:
         }
     }
 private:
-    void insert_body(Cell& cell, const body& newBody);
     friend class OctTree;
     bool external;
     bounding_box bounds;
