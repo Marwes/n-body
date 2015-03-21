@@ -7,6 +7,7 @@
 #include "debug.h"
 
 void runBH_single(std::vector<body>& bodies, const int iterations, const double theta, const int workers, const double dt) {
+    DPRINT("Iterations: " << iterations << " Threads: " << workers << " Theta: " << theta << std::endl);
     std::vector<vec> forces(bodies.size());
     vec max_position;
     for (const body& b: bodies) {
@@ -32,6 +33,6 @@ void runBH_single(std::vector<body>& bodies, const int iterations, const double 
 }
 
 int main(int argc, char** argv) {
-    NBodyRunner(argc, argv, "output_BHsingle", runBH_single);
+    NBodyRunner(argc, argv, "output_BHsingle", false, true, runBH_single);
     return 0;
 }

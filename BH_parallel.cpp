@@ -34,6 +34,6 @@ void runBH_parallel(std::vector<body>& bodies, const int iterations, const doubl
 }
 
 int main(int argc, char** argv) {
-    NBodyRunner(argc, argv, "output_BHparallel", runBH_parallel);
+    NBodyRunner(argc, argv, "output_BHparallel", true, true, runBH_parallel);
     return 0;
 }

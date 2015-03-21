@@ -29,37 +29,48 @@ std::vector<body> create_bodies(int n)
 	return bodies;
 }
 
-int init(int argc,char **argv,std::vector<body> & ret_bodies,int & iters,double & dt, double & theta,int & threads)
+int init(int argc,char **argv, bool needThreads, bool needTheta, std::vector<body> & ret_bodies,int & iters,double & dt, double & theta,int & threads)
 {
 	int n=1;
+    if (n >= argc) {
+        std::cerr << "Expected number of bodies as argument " << n << std::endl;
+        exit(1);
+    }
 	//numbodies
 	int size=strtol(argv[n],nullptr,10);
 	if(size)
 	{
-		n++;
 		ret_bodies=create_bodies(size);
 	}
 	else
 	{
+        //Not an integer so read bodies from the file
 		ret_bodies=readBodies(argv[n], 0);
-		n++;
 	}
+    n++;
+    if (n >= argc) {
+        std::cerr << "Expected number of iterations as argument " << n << std::endl;
+        exit(1);
+    }
 	//iters
 	iters=atoi(argv[n]);
-	n++;
-	//theta
-	if (argc==5)
-	{
-		theta=atof(argv[n]);
-		n++;
-	}
-	//threads
-	if(argc>3)
-	{
+    n++;
+    if (needThreads) {
+        if (n >= argc) {
+            std::cerr << "Expected number of threads as argument " << n << std::endl;
+            exit(1);
+        }
 		threads=atoi(argv[n]);
-	}
-	else 
-		threads=1;
+        n++;
+    }
+    if (needTheta) {
+        if (n >= argc) {
+            std::cerr << "Expected theta as argument " << n << std::endl;
+            exit(1);
+        }
+		theta=atof(argv[n]);
+        n++;
+    }
 	return 0;
 }
 
@@ -141,13 +152,13 @@ void writeBodies(const char * file, int mode,std::vector<body> bodies)
 }
 
 
-void NBodyRunner(int argc, char** argv, const char* outputfile, NBodyFunc func) {
+void NBodyRunner(int argc, char** argv, const char* outputfile, bool needThreads, bool needTheta, NBodyFunc func) {
     std::vector<body> bodies;
     int iterations = 100;
     double dt = 0.1;
     double theta = 0.5;
     int threads = 1;
-	init(argc,argv,bodies, iterations,dt, theta,threads);
+	init(argc,argv, needThreads, needTheta, bodies, iterations,dt, theta,threads);
 	omp_set_num_threads(threads);
 	double start=omp_get_wtime(); 
     func(bodies, iterations, theta, threads, dt);

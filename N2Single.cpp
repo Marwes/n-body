@@ -36,6 +36,6 @@ void runN2_single(std::vector<body>& bodies, const int iterations, const double 
 
 int main(int argc, char** argv)
 {
-	NBodyRunner(argc, argv, "output_N2single", runN2_single);
+	NBodyRunner(argc, argv, "output_N2single", false, false, runN2_single);
     return 0;
 }

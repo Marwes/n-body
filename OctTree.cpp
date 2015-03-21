@@ -164,12 +164,18 @@ void Cell::insert_body(const body& newBody) {
 }
 
 vec OctTree::forceOnBody(const double sqTheta, const body& self) {
+#ifdef DEBUG
+    int nearBodies = 0;
+#endif
     vec force;
     this->depth_first([&] (const Cell& cell) {
         //If the cell is external and holds a body we calculate the force
         //from that body directly
         if (cell.is_external()) {
             if (cell.getBody() != nullptr) {
+#ifdef DEBUG
+                nearBodies += 1;
+#endif
                 force += self.forceFrom(*cell.getBody());
             }
             return Traverse::Stop;
@@ -190,6 +196,7 @@ vec OctTree::forceOnBody(const double sqTheta, const body& self) {
             }
         }
     });
+    DPRINT("Near: " << nearBodies);
     return force;
 }
 

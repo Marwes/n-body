@@ -45,6 +45,6 @@ void runN2_parallel(std::vector<body>& bodies, const int iterations, const doubl
 
 int main(int argc, char** argv)
 {
-    NBodyRunner(argc, argv, "output_N2parallel", runN2_parallel);
+    NBodyRunner(argc, argv, "output_N2parallel", true, false, runN2_parallel);
     return 0;
 }
