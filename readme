@@ -1,9 +1,12 @@
-programs located bin folder
+All 4 programs are built by using 'make' and the executables are placed in the ./bin/ folder.¨
 
+Each program is run as follows.
 
+N2single NUM_BODIES ITERATIONS
+N2parallel NUM_BODIES ITERATIONS NUM_THREADS
+BH_single NUM_BODIES ITERATIONS THETA
+BH_parallel NUM_BODIES ITERATIONS THETA NUM_THREADS
 
-usage 
-	-i		number of iterations		int
-	-f		senario file				file
-	-dt		delta t for simiulation		float
-	-n		number of threads			int
+NUM_BODIES can optionally be replaced by the name of a file containing bodies created by the ./bin/generator program (also built by calling make).
+
+generator FILENAME NUM_BODIES
