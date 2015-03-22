@@ -16,9 +16,10 @@ void runN2_parallel(std::vector<body>& bodies, const int iterations, const doubl
 	vec zero;
     int numBodies = bodies.size();
     std::vector<vec> forcematrix(numBodies * threads);
+    #pragma omp parallel
     for (int ii = 0; ii < iterations; ++ii) 
 	{
-		#pragma omp parallel for schedule(dynamic,20)
+		#pragma omp for schedule(dynamic,20)
 	    for (int bi = 0; bi < numBodies; ++bi) 
 		{
 			vec force=zero;
@@ -32,7 +33,7 @@ void runN2_parallel(std::vector<body>& bodies, const int iterations, const doubl
 	            forcematrix[rank*numBodies+bi]+=force;
 	        }
 	    }
-		#pragma omp parallel for
+		#pragma omp for
 	    for (int bi = 0; bi < numBodies; ++bi)
 		{
 			vec force=zero;

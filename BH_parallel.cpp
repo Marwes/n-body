@@ -17,14 +17,15 @@ void runBH_parallel(std::vector<body>& bodies, const int iterations, const doubl
     }
     bounding_box bounds = bounding_box(-3 * max_position, 3 * max_position);
     const double sqTheta = theta * theta;
+    #pragma omp parallel
     for (int ii = 0; ii < iterations; ++ii) {
         DPRINT("Begin iteration " << ii);
         OctTree tree(bodies, bounds);
-        #pragma omp parallel for
+        #pragma omp for
         for (int bi = 0; bi < bodies.size(); ++bi) {
             forces[bi] = tree.forceOnBody(sqTheta, bodies[bi]);
         }
-        #pragma omp parallel for
+        #pragma omp for
         for (int bi = 0; bi < bodies.size(); ++bi) {
             bodies[bi].update(forces[bi], dt);
         }
