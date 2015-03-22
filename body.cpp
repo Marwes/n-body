@@ -6,20 +6,17 @@ vec body::forceFrom(const body& other) const
 {
     return forceFrom(other.pos, other.m);
 }
+
 vec body::forceFrom(const vec& other_pos, double other_mass) const
 {
     vec pos_diff = pos - other_pos;
-    distance sq_dist = pos_diff.sqnorm();
-    distance dist = std::sqrt(sq_dist);
-    distance magnitude = G * m * other_mass / (sq_dist * dist+EPSILON);
-
-    return magnitude * pos_diff;
+    distance dist = pos_diff.norm();
+    return calcForce(pos_diff, dist, m, other_mass);
 }
-void body::update(vec force,double dt )
-{
 
-	vec acc=force/m;
-	
+void body::update(vec force, double dt)
+{
+	vec acc=force/m;	
 	vel+=(acc/0.5)*dt;
 	pos+=vel*dt;
 

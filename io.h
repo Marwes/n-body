@@ -12,6 +12,8 @@ int init(int argc,char **argv,std::vector<body> & ret_bodies,int & iters,double 
 
 typedef void (*NBodyFunc)(std::vector<body>& bodies, const int iterations, const double theta, const int workers, const double dt);
 
+//Handles the parsing of command line arguments and then runs `func` which is responsible for the logic of the particular
+//N-body algorithm
 void NBodyRunner(int argc, char** argv, const char* outputfile, bool needThreads, bool needTheta, NBodyFunc func);
 
 

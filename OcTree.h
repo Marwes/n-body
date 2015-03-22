@@ -65,14 +65,14 @@ public:
     }
 
     //Does a depth first this cell. If the function `f` returns `Continue`
-    ///It will continue calling `depth_first` on each of its children
+    //It will continue calling `preorderWalk` on each of its children
     template<typename F>
-    void depth_first(const F& f) {
+    void preorderWalk(const F& f) {
         switch (f(*this)) {
             case Traverse::Continue:
                 for (auto& child: children) {
                     if (child != nullptr) {
-                        child->depth_first(f);
+                        child->preorderWalk(f);
                     }
                 }
                 break;
@@ -81,7 +81,7 @@ public:
         }
     }
 private:
-    friend class OctTree;
+    friend class OcTree;
     bool external;
     bounding_box bounds;
     vec massCenter;
@@ -90,18 +90,19 @@ private:
     std::array<std::unique_ptr<Cell>, 8> children;
 };
 
-//An octree which partitions a space into 8 cells at each level in the tree
+//An octree which partitions space into 8 cells at each level in the tree
 //Inserting each body into its own external cell.
 //It is assumed that the `bodies` vector is not resized while the tree is alive
-class OctTree {
+class OcTree {
 public:
-    OctTree(const std::vector<body>& bodies, bounding_box bounds);
+    //Constructs an Oct
+    OcTree(const std::vector<body>& bodies, bounding_box bounds);
 
     vec forceOnBody(const double sqTheta, const body& self);
 
     template<typename F>
-    void depth_first(const F& f) {
-        cell.depth_first(f);
+    void preorderWalk(const F& f) {
+        cell.preorderWalk(f);
     }
     const bounding_box& getBounds() const { return cell.bounds; }
 private:
@@ -109,4 +110,4 @@ private:
 };
 
 //Verifies that the tree is correct to some extent
-void verifyTree(OctTree& tree, int n_bodies);
+void verifyTree(OcTree& tree, int n_bodies);

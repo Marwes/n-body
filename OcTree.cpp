@@ -1,7 +1,35 @@
-#include "OctTree.h"
+#include "OcTree.h"
 #include <assert.h>
 #include <iostream>
 #include "debug.h"
+
+bounding_box::bounding_box() {
+}
+
+bounding_box::bounding_box(const vec& pos1, const vec& pos2) {
+    center = 0.5 * (pos2 + pos1);
+    length = pos2[0] - pos1[0];
+    if (length < 0) {
+        length = -length;
+    }
+    assert(length > 0);
+}
+bool bounding_box::contains(const vec& position) {
+    double halfSide = length / 2;
+    for (int i = 0; i < DIM; ++i) {
+        if (center[i] - halfSide > position[i]
+         || center[i] + halfSide < position[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+std::ostream& operator << (std::ostream& o, const bounding_box& b)
+{
+    o << "(" << b.center << ", " << b.length;
+    return o; 
+}
 
 Cell::Cell()
     : Cell(bounding_box()) {
@@ -29,7 +57,7 @@ Cell& Cell::operator=(Cell&& other) {
     return *this;
 }
 
-
+//Get the box at index i relative the center of the current cell
 static bounding_box getBox(int i, const vec& center, double half) {
     switch (i) {
         case 0: return bounding_box(center, center + vec(half, half, half));
@@ -49,6 +77,7 @@ Cell& Cell::getCell(const vec& pos) {
     double half = bounds.length / 2;
     vec center = bounds.center;
     vec dir = pos - center;
+    //Choose the cell by creating an index out the direction which the position is relative the current center
     int i = (std::signbit(dir[0]) << 2) + (std::signbit(dir[1]) << 1) + std::signbit(dir[2]);
     assert(i < children.size());
     if (children[i] == nullptr) {
@@ -59,43 +88,17 @@ Cell& Cell::getCell(const vec& pos) {
     return *children[i];
 }
 
-bounding_box::bounding_box() {
-}
-
-bounding_box::bounding_box(const vec& pos1, const vec& pos2) {
-    center = 0.5 * (pos2 + pos1);
-    length = pos2[0] - pos1[0];
-    if (length < 0) {
-        length = -length;
-    }
-    assert(length > 0);
-}
-bool bounding_box::contains(const vec& position) {
-    double halfSide = length / 2;
-    for (int i = 0; i < DIM; ++i) {
-        if (center[i] - halfSide > position[i]
-         || center[i] + halfSide < position[i]) {
-            return false;
-        }
-    }
-    return true;
-}
-
-
-std::ostream& operator << (std::ostream& o, const bounding_box& b)
-{
-    o << "(" << b.center << ", " << b.length;
-    return o; 
-}
-
 double sign(double x) {
     if (x > 0) return 1;
     else return -1;
 }
 
-OctTree::OctTree(const std::vector<body>& bodies, bounding_box bounds)
+OcTree::OcTree(const std::vector<body>& bodies, bounding_box bounds)
     : cell(bounds) {
     for (auto& body: bodies) {
+        //If the octree does not contain the body we need to make the tree larger.
+        //We do this by creating a larger cell which contains the current cell and then we place the current
+        //cell in the correct place in the new cell
         if (!cell.bounds.contains(body.pos)) {
             DPRINT("Increase size of " << cell.bounds << " for " << body.pos); 
             vec direction = body.pos - bounds.center;
@@ -127,6 +130,7 @@ void Cell::insert_body(const body& newBody) {
         this->mass = newBody.m;
         return;
     }
+    //Otherwise we have the get the sub-cell which contains the body and insert it into that cell
     getCell(newBody.pos).insert_body(newBody);
     massCenter = (mass * massCenter + newBody.m * newBody.pos) / (mass + newBody.m);
     mass += newBody.m;
@@ -140,12 +144,12 @@ void Cell::insert_body(const body& newBody) {
     }
 }
 
-vec OctTree::forceOnBody(const double sqTheta, const body& self) {
+vec OcTree::forceOnBody(const double sqTheta, const body& self) {
 #ifdef DEBUG
     int nearBodies = 0;
 #endif
     vec force;
-    this->depth_first([&] (const Cell& cell) {
+    this->preorderWalk([&] (const Cell& cell) {
         //If the cell is external and holds a body we calculate the force
         //from that body directly
         if (cell.is_external()) {
@@ -181,9 +185,9 @@ bool Cell::is_external() const {
     return external; 
 }
 
-void verifyTree(OctTree& tree, int n_bodies) {
+void verifyTree(OcTree& tree, int n_bodies) {
     int bodies_in_tree = 0;
-    tree.depth_first([&] (const Cell& cell) {
+    tree.preorderWalk([&] (const Cell& cell) {
         assert(cell.is_external() || (!cell.is_external() && cell.getBody() == nullptr));
         if (cell.getBody() != nullptr) {
             bodies_in_tree += 1;

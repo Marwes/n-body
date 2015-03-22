@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 #include "body.h"
-#include "OctTree.h"
+#include "OcTree.h"
 #include "io.h"
 #include "debug.h"
 
@@ -20,7 +20,7 @@ void runBH_parallel(std::vector<body>& bodies, const int iterations, const doubl
     #pragma omp parallel
     for (int ii = 0; ii < iterations; ++ii) {
         DPRINT("Begin iteration " << ii);
-        OctTree tree(bodies, bounds);
+        OcTree tree(bodies, bounds);
         #pragma omp for
         for (int bi = 0; bi < bodies.size(); ++bi) {
             forces[bi] = tree.forceOnBody(sqTheta, bodies[bi]);
