@@ -29,7 +29,7 @@ void runN2_parallel(std::vector<body>& bodies, const int iterations, const doubl
 	        for (int bj = bi+1; bj < numBodies; ++bj) 
 			{
 				force= self.forceFrom(bodies[bj]);
-	            forcematrix[rank*numBodies+bj]+=force;
+	            forcematrix[rank*numBodies+bj]-=force;
 	            forcematrix[rank*numBodies+bi]+=force;
 	        }
 	    }
