@@ -1,0 +1,73 @@
+./bin/N2parallel data/120_bodies 35000 1
+14.793  14.781  14.766  14.771  14.765
+
+./bin/BH_parallel data/120_bodies 35000 0.8 1
+15.219  15.235  15.226  15.234  15.219
+
+./bin/N2parallel data/120_bodies 35000 2
+8.266   8.282   8.266   8.282   8.266
+
+./bin/BH_parallel data/120_bodies 35000 0.8 2
+9.485   9.469   9.485   9.469   9.516
+
+./bin/N2parallel data/120_bodies 35000 4
+5.36    5.375   5.375   5.422   5.359
+
+./bin/BH_parallel data/120_bodies 35000 0.8 4
+6.985   7.094   6.938   6.969   6.953
+
+./bin/N2single data/120_bodies 35000
+14.703  14.704  14.703  14.703  14.703
+
+./bin/BH_single data/120_bodies 35000 0.8
+15.172  15.203  15.234  15.218  15.219
+
+./bin/N2parallel data/180_bodies 35000 1
+32.893  33.015  32.891  32.922  32.998
+
+./bin/BH_parallel data/180_bodies 35000 0.8 1
+26.547  26.562  26.547  26.562  26.61
+
+./bin/N2parallel data/180_bodies 35000 2
+17.109  17.141  17.11   17.125  17.109
+
+./bin/BH_parallel data/180_bodies 35000 0.8 2
+16.062  16.016  16.032  16.031  16.063
+
+./bin/N2parallel data/180_bodies 35000 4
+9.469   9.453   9.469   9.453   9.468
+
+./bin/BH_parallel data/180_bodies 35000 0.8 4
+11.046  11.109  11.047  11.094  11.25
+
+./bin/N2single data/180_bodies 35000
+33      32.969  32.958  32.995  32.961
+
+./bin/BH_single data/180_bodies 35000 0.8
+26.492  26.484  26.531  26.469  26.535
+
+./bin/N2parallel data/240_bodies 35000 1
+58.234  58.235  58.274  58.25   58.272
+
+./bin/BH_parallel data/240_bodies 35000 0.8 1
+40.392  40.375  40.375  40.375  40.468
+
+./bin/N2parallel data/240_bodies 35000 2
+29.671  29.719  29.672  29.719  29.656
+
+./bin/BH_parallel data/240_bodies 35000 0.8 2
+23.735  23.734  23.75   23.703  23.75
+
+./bin/N2parallel data/240_bodies 35000 4
+16.64   16.578  16.594  16.578  16.546
+
+./bin/BH_parallel data/240_bodies 35000 0.8 4
+15.578  15.656  15.578  15.609  15.578
+
+./bin/N2single data/240_bodies 35000
+58.516  58.609  58.558  58.56   58.507
+
+./bin/BH_single data/240_bodies 35000 0.8
+40.296  40.293  40.295  40.314  40.297
+
+

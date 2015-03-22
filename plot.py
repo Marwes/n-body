@@ -36,7 +36,7 @@ with open("measurements") as f:
         has_threads = name.find("parallel") > 0
         if has_threads:
             threads = int(header_items[len(header_items) - 1])
-        times = [float(x) for x in data.strip().split("\t")]
+        times = [float(x) for x in data.strip().split("  ") if x != ""]
         testdata[bodies].append(TestData(name, bodies, iterations, threads, times))
 
 
@@ -50,14 +50,19 @@ for bodies, datas in testdata.iteritems():
         for data in sorted(g, key=lambda data: data.threads):
             times.append(sum(data.times) / len(data.times))
             threads.append(data.threads)
-        if len(times) == 1:
+        is_single_thread = len(times) == 1
+        if is_single_thread:
             times = times*3
             threads = [1,2,4]
         print times, threads
-        pylab.plot(threads, times, label=name)
+        line = pylab.plot(threads, times, label=name)
+        if not is_single_thread:
+            color = line[0].get_color()
+            pylab.plot(threads, [times[0]/x for x in threads], color=color, linestyle="--")
     pylab.ylabel("Time [s]")
+    pylab.ylim(0)
     pylab.xlabel("Threads [N]")
-    pylab.xticks([1,2, 3,4])
+    pylab.xticks([1, 2, 3, 4])
     pylab.legend(loc="lower left")
     pylab.title(str(bodies) + " bodies")
     pylab.savefig("Plot" + str(bodies))
