@@ -44,7 +44,6 @@ for bodies, datas in testdata.iteritems():
     pylab.clf()
     print "Plot"
     for name, g in groupby(sorted(datas, key=lambda d: d.name), lambda d: d.name):
-        print "Group ", name
         times = []
         threads = []
         for data in sorted(g, key=lambda data: data.threads):
@@ -54,11 +53,12 @@ for bodies, datas in testdata.iteritems():
         if is_single_thread:
             times = times*3
             threads = [1,2,4]
-        print times, threads
+        print name, bodies, "Speedup=", times[0] / times[1], times[0] / times[2]
         line = pylab.plot(threads, times, label=name)
         if not is_single_thread:
             color = line[0].get_color()
             pylab.plot(threads, [times[0]/x for x in threads], color=color, linestyle="--")
+    
     pylab.ylabel("Time [s]")
     pylab.ylim(0)
     pylab.xlabel("Threads [N]")

@@ -10,3 +10,5 @@ BH_parallel NUM_BODIES ITERATIONS THETA NUM_THREADS
 NUM_BODIES can optionally be replaced by the name of a file containing bodies created by the ./bin/generator program (also built by calling make).
 
 generator FILENAME NUM_BODIES
+
+To run the benchmarks found in the report you can run the bash file 'measure.sh' which runs all programs and outputs their run times.
